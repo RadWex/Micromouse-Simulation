@@ -33,13 +33,13 @@ class VehicleSensors():
     # methods for driving
     def checkRight(self):
         self.updateSensors()
-        if math.atan2(self.detectedPoint_right[0], self.detectedPoint_right[2]) > 0.7:
+        if math.atan2(self.detectedPoint_right[0], self.detectedPoint_right[2]) > 0.7 and self.detectedPoint_right[2] > 0.4:
             return True
         return False
 
     def checkLeft(self):
         self.updateSensors()
-        if math.atan2(self.detectedPoint_left[0], self.detectedPoint_left[2]) > 0.7:
+        if math.atan2(self.detectedPoint_left[0], self.detectedPoint_left[2]) > 0.7 and self.detectedPoint_left[2] > 0.4:
             return True
         return False
 
@@ -60,8 +60,20 @@ class VehicleSensors():
         return False
 
     # methods for map reconstruction
-    def isFrontWall(self):
+    def wallInFront(self):
         self.updateSensors()
         if self.detectionState_front:
+            return False
+        return True
+
+    def wallRight(self):
+        self.updateSensors()
+        if math.atan2(self.detectedPoint_right[0], self.detectedPoint_right[2]) > 0.5 and self.detectedPoint_right[2] > 0.4:
+            return True
+        return False
+
+    def wallLeft(self):
+        self.updateSensors()
+        if math.atan2(self.detectedPoint_left[0], self.detectedPoint_left[2]) > 0.5 and self.detectedPoint_left[2] > 0.4:
             return True
         return False

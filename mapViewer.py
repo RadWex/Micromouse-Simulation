@@ -23,7 +23,7 @@ def draw_window():
     pygame.init()
     DISPLAYSURF = pygame.display.set_mode((500, 500))
     pygame.display.set_caption('Hello World!')
-    maze_map = numpy.loadtxt('file.txt', delimiter=",", dtype=int)
+    maze_map = numpy.loadtxt('best_way.txt', delimiter=",", dtype=int)
     rows = maze_map.shape[0]
     cols = maze_map.shape[1]
     graphics = load_graphics("map_segments")
@@ -37,7 +37,7 @@ def draw_window():
         for x in range(0, rows):
             j = 0
             for y in range(0, cols):
-                if maze_map[y][x] != 0:
+                if maze_map[y][x] != 300:
                     DISPLAYSURF.blit(graphics[maze_map[y][x]], (i, j))
                 j += 40
             i += 40
