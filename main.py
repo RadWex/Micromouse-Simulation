@@ -11,8 +11,55 @@ from os.path import isfile, join
 from communication import Communication
 from vehicleCinematics import VehicleCinematics
 from vehicleSensors import VehicleSensors
-
+import mapViewer
 maze_map = numpy.zeros((10, 10), dtype=int)
+
+
+def segmentInserter(maze_map_big, segment, i, j):
+    i *= 3
+    j *= 3
+    k = 0
+    l = 0
+    print(segment)
+    for u in range(i, i+3):
+        for y in range(j, j+3):
+            maze_map_big[u][y] = segment[k][l]
+            # print(maze_map_big[i][j])
+            k += 1
+        k = 0
+        l += 1
+
+
+def openConverterTemplateFile():
+    maze_map = numpy.loadtxt('file.txt', delimiter=",", dtype=int)
+    converterSegment = []
+    converterTemplate = numpy.loadtxt(
+        'converter.txt', delimiter=",", dtype=int)
+    rows = converterTemplate.shape[0]
+    cols = converterTemplate.shape[1]
+    tmp = []
+    tmp2 = []
+    for i in range(0, rows):
+        for j in range(0, cols):
+            tmp.append(converterTemplate[i][j])
+        tmp2.append(tmp)
+        tmp = []
+        if ((i + 1) % 3 == 0):
+            # print(tmp2)
+            converterSegment.append(tmp2)
+            tmp2 = []
+
+    # print(converterSegment)
+    rows = maze_map.shape[0]
+    cols = maze_map.shape[1]
+    map_after_convert = numpy.zeros((30, 30), dtype=int)
+    for i in range(0, rows):
+        for j in range(0, cols):
+            # print(maze_map[i][j])
+            segmentInserter(map_after_convert,
+                            converterSegment[maze_map[i][j]], i, j)
+    print(map_after_convert)
+    mapViewer.draw_window()
 
 
 class Map():
@@ -202,6 +249,7 @@ def draw_window():
         time.sleep(0.5)
 
 
+'''
 if __name__ == "__main__":
     simulationHandle = Communication()
     simulationHandle.start()
@@ -209,3 +257,5 @@ if __name__ == "__main__":
     # robot.start()
     threading.Thread(target=robot.start).start()
     threading.Thread(target=draw_window).start()
+'''
+openConverterTemplateFile()
