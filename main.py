@@ -151,6 +151,16 @@ class Map():
         elif direction == "left":
             self.interchange[x][y] = 2
 
+    def addCornerSegmentFront(self, x, y, direction):
+        if direction == "up":
+            self.interchange[x][y] = 0
+        elif direction == "right":
+            self.interchange[x][y] = 1
+        elif direction == "down":
+            self.interchange[x][y] = 2
+        elif direction == "left":
+            self.interchange[x][y] = 3
+
     def addCornerSegmentLeft(self, x, y, direction):
         if direction == "up":
             self.interchange[x][y] = 6
@@ -203,7 +213,6 @@ class Vehicle():
         self.x = x
         self.y = y
         direction = direction
-        flag = False
         self.distanceTraveled = 0
         while True:
 
@@ -216,17 +225,25 @@ class Vehicle():
             if self.hS.checkRight() and acumu > 20:
                 print('r')
                 if self.hS.wallInFront():
-                    flag = False
+                    flag_front = True
                 else:
-                    flag = True
+                    flag_front = False
+                if self.hS.wallLeft():
+                    flag_left = True
+                else:
+                    flag_left = False
+
                 self.hC.turn_straight_right(5)
                 self.distanceTraveled = 0
                 acumu = 0
                 self.changeCoord(direction)
-                if flag:
-                    self.map.addCornerSegmentRight(self.x, self.y, direction)
-                else:
+                if flag_left:
+                    self.map.addCornerSegmentFront(self.x, self.y, direction)
+                elif flag_front:
                     self.map.addCrossSegmentRight(self.x, self.y, direction)
+                else:
+                    self.map.addCornerSegmentRight(self.x, self.y, direction)
+
                 if direction == 'up':
                     direction = 'right'
                 elif direction == 'right':
@@ -239,15 +256,15 @@ class Vehicle():
             elif self.hS.checkLeft() and acumu > 20:
                 print('l')
                 if self.hS.wallInFront():
-                    flag = False
+                    flag_front = False
                 else:
-                    flag = True
+                    flag_front = True
                 self.hC.turn_straight_left(5)
                 self.distanceTraveled = 0
                 acumu = 0
                 self.changeCoord(direction)
                 self.map.addCornerSegmentLeft(self.x, self.y, direction)
-                if flag:
+                if flag_front:
                     self.map.addCornerSegmentLeft(self.x, self.y, direction)
                 else:
                     self.map.addCrossSegmentLeft(self.x, self.y, direction)
@@ -344,7 +361,7 @@ if __name__ == "__main__":
     robot = Vehicle(simulationHandle)
     # robot.start()
     # 'up'
-    #threading.Thread(target=robot.start, args=(1, 3, "right")).start()
-    # threading.Thread(target=draw_window).start()
+    threading.Thread(target=robot.start, args=(0, 0, "up")).start()
+    threading.Thread(target=draw_window).start()
 
-    openConverterTemplateFile((28, 1), (28, 10))
+    #openConverterTemplateFile((28, 1), (28, 10))
