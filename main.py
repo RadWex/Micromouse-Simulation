@@ -11,7 +11,12 @@ from os.path import isfile, join
 from communication import Communication
 from vehicleCinematics import VehicleCinematics
 from vehicleSensors import VehicleSensors
+from algorith_astar import *
+
+#path = astar(level, i.position, (tmp_y, tmp_x))
+# to del
 import mapViewer
+
 maze_map = numpy.zeros((10, 10), dtype=int)
 
 
@@ -23,7 +28,7 @@ def segmentInserter(maze_map_big, segment, i, j):
     print(segment)
     for u in range(i, i+3):
         for y in range(j, j+3):
-            maze_map_big[u][y] = segment[k][l]
+            maze_map_big[u][y] = segment[l][k]
             # print(maze_map_big[i][j])
             k += 1
         k = 0
@@ -56,9 +61,12 @@ def openConverterTemplateFile():
     for i in range(0, rows):
         for j in range(0, cols):
             # print(maze_map[i][j])
-            segmentInserter(map_after_convert,
-                            converterSegment[maze_map[i][j]], i, j)
+            if maze_map[i][j] != 0:
+                segmentInserter(map_after_convert,
+                                converterSegment[maze_map[i][j]], i, j)
     print(map_after_convert)
+    path = astar(map_after_convert, (28, 1), (28, 4))
+    print(path)
     mapViewer.draw_window()
 
 
