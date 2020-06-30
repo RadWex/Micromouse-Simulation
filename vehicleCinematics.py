@@ -20,8 +20,6 @@ class VehicleCinematics():
             self.simulation, "240cmHighWall400cm0", sim.simx_opmode_blocking)
 
     def forward(self, speed, distance):
-        if speed <= 0.01:
-            return
         res, previousPosition = sim.simxGetFloatSignal(
             self.simulation, "signal", sim.simx_opmode_streaming)
         drivenDistance = 0
@@ -33,8 +31,6 @@ class VehicleCinematics():
         self.setMotors(0, 0)
 
     def backward(self, speed, distance):
-        if speed <= 0.01:
-            return
         res, previousPosition = sim.simxGetFloatSignal(
             self.simulation, "signal", sim.simx_opmode_streaming)
         drivenDistance = 0
@@ -46,9 +42,6 @@ class VehicleCinematics():
         self.setMotors(0, 0)
 
     def turn_left(self, speed, angle):
-        if speed <= 0.01:
-            return
-
         rad = sim.simxGetObjectOrientation(self.simulation, self.lf_motor_handle,
                                            self.rf_wall_handle, sim.simx_opmode_blocking)
         old = rad[1][1]*(180/math.pi)
@@ -72,9 +65,6 @@ class VehicleCinematics():
         self.setMotors(0, 0)
 
     def turn_right(self, speed, angle):
-        if speed <= 0.01:
-            return
-
         rad = sim.simxGetObjectOrientation(self.simulation, self.lf_motor_handle,
                                            self.rf_wall_handle, sim.simx_opmode_blocking)
         old = rad[1][1]*(180/math.pi)
@@ -97,8 +87,6 @@ class VehicleCinematics():
         self.setMotors(0, 0)
 
     def turn_straight_right(self, speed):
-        if speed <= 0.01:
-            return
         old = sim.simxGetObjectOrientation(self.simulation, self.lf_motor_handle,
                                            self.rf_wall_handle, sim.simx_opmode_blocking)
         while True:
@@ -114,9 +102,20 @@ class VehicleCinematics():
                     break
         self.setMotors(0, 0)
 
+    def to_right_angle_from_right(self, speed):
+        while True:
+            self.setMotors(speed, -speed)
+            new = sim.simxGetObjectOrientation(self.simulation, self.lf_motor_handle,
+                                               self.rf_wall_handle, sim.simx_opmode_blocking)
+            if(new[1][1] > 1.52):
+                break
+            elif(new[1][1] < -1.52):
+                break
+            elif(new[1][1] < 0.05 and new[1][1] > -0.05):
+                break
+        self.setMotors(0, 0)
+
     def turn_straight_left(self, speed):
-        if speed <= 0.01:
-            return
         old = sim.simxGetObjectOrientation(self.simulation, self.lf_motor_handle,
                                            self.rf_wall_handle, sim.simx_opmode_blocking)
         while True:
@@ -132,6 +131,19 @@ class VehicleCinematics():
                     break
         self.setMotors(0, 0)
 
+    def to_right_angle_from_left(self, speed):
+        while True:
+            self.setMotors(-speed, speed)
+            new = sim.simxGetObjectOrientation(self.simulation, self.lf_motor_handle,
+                                               self.rf_wall_handle, sim.simx_opmode_blocking)
+            if(new[1][1] > 1.52):
+                break
+            elif(new[1][1] < -1.52):
+                break
+            elif(new[1][1] < 0.05 and new[1][1] > -0.05):
+                break
+        self.setMotors(0, 0)
+
     def setMotors(self, left, right):
         err_code = sim.simxSetJointTargetVelocity(
             self.simulation, self.rb_motor_handle, right, sim.simx_opmode_streaming)
@@ -141,3 +153,14 @@ class VehicleCinematics():
             self.simulation, self.lb_motor_handle, left, sim.simx_opmode_streaming)
         err_code = sim.simxSetJointTargetVelocity(
             self.simulation, self.lf_motor_handle, left, sim.simx_opmode_streaming)
+
+    def getGeographicalDirection(self):
+
+        new = sim.simxGetObjectOrientation(self.simulation, self.lf_motor_handle,
+                                           self.rf_wall_handle, sim.simx_opmode_blocking)
+        if(new[1][1] > 1 or new[1][1] < -1):
+            # north/south
+            return 0
+        else:
+            # west/east
+            return 1

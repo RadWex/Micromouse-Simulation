@@ -50,12 +50,12 @@ class VehicleSensors():
         return False
 
     def checkWallDistDiffLeft(self):
-        if self.detectedPoint_left[2] > self.detectedPoint_right[2]+0.1 and self.detectionState_Right and self.detectionState_Left:
+        if self.detectedPoint_left[2] > self.detectedPoint_right[2]+0.15 and self.detectionState_Right and self.detectionState_Left:
             return True
         return False
 
     def checkWallDistDiffRight(self):
-        if self.detectedPoint_right[2] > self.detectedPoint_left[2]+0.1 and self.detectionState_Right and self.detectionState_Left:
+        if self.detectedPoint_right[2] > self.detectedPoint_left[2]+0.15 and self.detectionState_Right and self.detectionState_Left:
             return True
         return False
 

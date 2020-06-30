@@ -1,0 +1,10 @@
+__pycache__/
+
+.vscode/
+
+
+remoteApi.dll
+
+sim.py
+
+simConst.py
