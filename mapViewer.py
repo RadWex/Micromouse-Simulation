@@ -19,11 +19,11 @@ def load_graphics(path):
     return graphics
 
 
-def draw_window():
+def draw_window(path):
     pygame.init()
     DISPLAYSURF = pygame.display.set_mode((500, 500))
-    pygame.display.set_caption('Hello World!')
-    maze_map = numpy.loadtxt('best_way.txt', delimiter=",", dtype=int)
+    pygame.display.set_caption('Simulation')
+    maze_map = numpy.loadtxt(path, delimiter=",", dtype=int)
     rows = maze_map.shape[0]
     cols = maze_map.shape[1]
     graphics = load_graphics("map_segments")
@@ -33,16 +33,16 @@ def draw_window():
                 pygame.quit()
                 sys.exit()
         i = 0
-        j = 0
+        j = 40*rows
         for x in range(0, rows):
-            j = 0
+            j = 40*rows
             for y in range(0, cols):
                 if maze_map[y][x] != 300:
                     DISPLAYSURF.blit(graphics[maze_map[y][x]], (i, j))
-                j += 40
+                j -= 40
             i += 40
         pygame.display.update()
 
 
 if __name__ == "__main__":
-    draw_window()
+    draw_window('best_way.txt')
